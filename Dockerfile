@@ -25,4 +25,4 @@ COPY --from=build-env /trojan-auth/trojan-auth /trojan-auth
 
 RUN chmod +x /trojan-auth
 
-ENTRYPOINT ["/trojan-auth"]
+CMD /trojan-auth -server -remote 

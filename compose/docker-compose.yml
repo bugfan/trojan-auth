@@ -7,6 +7,8 @@ services:
     environment:
       - DES_KEY=12345678  # 8 bytes
       - DB_HOST=10.128.0.3:3304
+    depends_on:
+      - "mysql"
     logging: 
       driver: "json-file"
       options: 
@@ -26,7 +28,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: auth
-    container_name: docker-mysql-auth
+    container_name: docker-mysql-trojan-auth
     ports:
     - 3304:3306
     volumes:
