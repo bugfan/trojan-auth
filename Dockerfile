@@ -2,7 +2,7 @@ FROM golang:1.17-alpine AS build-env
 MAINTAINER sean bugfan "908958194@qq.com"
 ADD . /trojan-auth
 WORKDIR /trojan-auth
-RUN go build -o trojan-auth main.go
+RUN go build
 
 FROM alpine:3.13
     
