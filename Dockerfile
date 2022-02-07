@@ -16,9 +16,9 @@ ENTRYPOINT ["/trojan-auth"]
 FROM alpine:3.13
 
 WORKDIR /
-RUN apk add --update --no-cache
-RUN apk add --update vim && \
-    apk add --update nano &&
+# RUN apk add --update --no-cache
+# RUN apk add --update vim && \
+#     apk add --update nano &&
     
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
 COPY --from=build-env /trojan-auth/trojan-auth /trojan-auth
