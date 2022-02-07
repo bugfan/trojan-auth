@@ -3,18 +3,12 @@ package srv
 import (
 	"net/http"
 
-	"github.com/bugfan/de"
 	"github.com/bugfan/rest"
-	"github.com/bugfan/trojan-auth/env"
 	"github.com/bugfan/trojan-auth/models"
 	"github.com/bugfan/trojan-auth/srv/apis"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
-
-func init() {
-	de.SetKey(env.Get("des_key"))
-}
 
 type route struct {
 	httpMethod   string

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/bugfan/de"
-	"github.com/bugfan/to"
 	"github.com/bugfan/trojan-auth/env"
 	"github.com/bugfan/trojan-auth/srv/services"
 	"github.com/bugfan/trojan-auth/utils"
@@ -14,12 +13,28 @@ import (
 
 var (
 	AuthName         string = env.GetDefault("AUTH_KEY", "TrojanAuth")
+	ApiName          string = env.GetDefault("API_KEY", "ApiAuth")
 	AuthRemoteIP     string = env.GetDefault("REMOTE_IP", "RemoteIp")
 	TK               string = "TrojanHash"
 	trojanApiCryptor        = de.New(env.Get("trojan_api_secret"))
 )
 
 func AuthMiddleware(ctx *gin.Context) {
+	token := ctx.Request.Header.Get(ApiName)
+	if token == "" {
+		ctx.Writer.WriteHeader(http.StatusForbidden)
+		ctx.Abort()
+		return
+	}
+	_, err := trojanApiCryptor.DecodeEx([]byte(token))
+	if err != nil {
+		ctx.Writer.WriteHeader(http.StatusForbidden)
+		ctx.Abort()
+		return
+	}
+	ctx.Next()
+}
+func VerifyVPNRequest(ctx *gin.Context) {
 	authToken := ctx.Request.Header.Get(AuthName)
 	if authToken == "" {
 		ctx.Writer.WriteHeader(http.StatusForbidden)
@@ -32,14 +47,9 @@ func AuthMiddleware(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	ctx.Keys[TK] = string(hash)
-	ctx.Next()
-}
-func VerifyVPNRequest(ctx *gin.Context) {
-	hash := to.String(ctx.Keys[TK])
 	remoteIP := ctx.Request.Header.Get(AuthRemoteIP)
 	logrus.Info("verify from vpn,ip is %v,hash is:%v\n", remoteIP, hash)
-	if _, has := services.GetPassByHash(hash); has {
+	if _, has := services.GetPassByHash(string(hash)); has {
 		ctx.JSON(http.StatusOK, nil)
 		return
 	}
