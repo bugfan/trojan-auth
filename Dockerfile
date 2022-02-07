@@ -1,14 +1,14 @@
 FROM golang:1.16 AS build-env
 MAINTAINER sean bugfan "908958194@qq.com"
-ADD . /wireguard-auth
-WORKDIR /wireguard-auth
-RUN go build -o wireguard-auth main.go
+ADD . /trojan-auth
+WORKDIR /trojan-auth
+RUN go build -o trojan-auth main.go
 
 FROM ubuntu:20.04
     
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
-COPY --from=build-env /wireguard-auth/wireguard-auth /wireguard-auth
+COPY --from=build-env /trojan-auth/trojan-auth /trojan-auth
 
-RUN chmod +x /wireguard-auth
+RUN chmod +x /trojan-auth
 
-ENTRYPOINT ["/wireguard-auth"]
+ENTRYPOINT ["/trojan-auth"]

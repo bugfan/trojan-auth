@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bugfan/trojan-auth/env"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/sirupsen/logrus"
 
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
@@ -16,6 +18,22 @@ var (
 	tables []interface{}
 )
 
+func init() {
+	Register(&Setting{})
+	Register(&Credential{})
+
+	_, err := SetEngine(&Config{
+		User:     env.Get("db_user"),
+		Password: env.Get("db_pwd"),
+		Host:     env.Get("db_host"),
+		Name:     env.Get("db_name"),
+		ShowSQL:  env.GetBool("db_show_sql"),
+	}, env.Get("db_scheme"))
+	if err != nil {
+		logrus.Error(err)
+		os.Exit(-1)
+	}
+}
 func Register(obj ...interface{}) {
 	tables = append(tables, obj...)
 

@@ -7,5 +7,5 @@ import (
 
 func main() {
 	// run it
-	srv.NewServer(env.Get("api_addr")).Run()
+	srv.NewAPIBackend().Run(env.Get("api_addr"))
 }

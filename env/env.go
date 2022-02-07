@@ -10,16 +10,14 @@ var defaults map[string]string
 
 func init() {
 	defaults = map[string]string{
-		"ipv4_ip":     "10.0.0.1",
-		"ipv4_n":      "32",
-		"db_user":     "root",
-		"db_pwd":      "123456",
-		"db_host":     "127.0.0.1:3305",
-		"db_name":     "auth",
-		"db_scheme":   "mysql",
-		"db_show_sql": "false",
-		"api_addr":    ":8005",
-		"des_key":     "trojango",
+		"db_user":           "root",
+		"db_pwd":            "123456",
+		"db_host":           "127.0.0.1:3304",
+		"db_name":           "auth",
+		"db_scheme":         "mysql",
+		"db_show_sql":       "false",
+		"api_addr":          ":5000",
+		"trojan_api_secret": "trojango",
 	}
 }
 
@@ -44,4 +42,11 @@ func GetInt64(key string) int64 {
 
 func GetBool(key string) bool {
 	return "true" == strings.ToLower(Get(key))
+}
+func GetDefault(key, def string) string {
+	v := Get(key)
+	if v == "" {
+		return def
+	}
+	return v
 }
