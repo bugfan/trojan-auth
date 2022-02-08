@@ -7,7 +7,7 @@ import (
 	"github.com/bugfan/de"
 	"github.com/bugfan/trojan-auth/env"
 	"github.com/bugfan/trojan-auth/srv/services"
-	"github.com/bugfan/trojan-auth/utils"
+	"github.com/bugfan/trojan-go/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -53,26 +53,21 @@ type packet struct {
 }
 
 func GenerateCredential(ctx *gin.Context) {
-	p := &packet{}
-	err := ctx.Bind(p)
-	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+	name := ctx.Query("name")
+	if name == "" {
+		ctx.AbortWithError(http.StatusUnprocessableEntity, errors.New("error arguments"))
 		return
 	}
-	if p.Pass == "" || p.Hash == "" || p.Name == "" {
-		ctx.AbortWithError(http.StatusUnprocessableEntity, err)
-		return
+	pass, hash := auth.GeneratePassAndHash()
+	pkt := &packet{
+		Name: name,
+		Pass: pass,
+		Hash: hash,
 	}
-	if utils.SHA224String(p.Pass) != p.Hash {
-		logrus.Error("given hash not match pass")
-		ctx.AbortWithError(http.StatusUnprocessableEntity, err)
-		return
-	}
-	if err = services.NewCredential(p.Name, p.Pass, p.Hash); err != nil {
+	if err := services.NewCredential(pkt.Name, pkt.Pass, pkt.Hash); err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	p.Hash = ""
-	ctx.JSON(http.StatusCreated, p)
+	ctx.JSON(http.StatusCreated, pkt)
 	return
 }
