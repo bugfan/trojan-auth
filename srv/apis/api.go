@@ -1,6 +1,8 @@
 package apis
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/bugfan/de"
@@ -20,15 +22,15 @@ var (
 
 func AuthMiddleware(ctx *gin.Context) {
 	token := ctx.Request.Header.Get(TokenKey)
+	fmt.Println("test auth", TokenKey, token)
 	if token == "" {
-		ctx.Writer.WriteHeader(http.StatusForbidden)
-		ctx.Abort()
+		ctx.AbortWithError(http.StatusForbidden, errors.New("nil token"))
 		return
 	}
-
+	fmt.Println("test auth2", AuthRemoteIP, token)
 	_, err := TrojanApiCryptor.DecodeEx([]byte(token))
 	if err != nil {
-		ctx.Writer.WriteHeader(http.StatusForbidden)
+		ctx.AbortWithError(http.StatusForbidden, err)
 		ctx.Abort()
 		return
 	}
