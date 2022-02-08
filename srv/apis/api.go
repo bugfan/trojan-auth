@@ -15,7 +15,7 @@ var (
 	TokenKey         string = env.GetDefault("AUTH_KEY", "Trojantoken")
 	AuthHash         string = env.GetDefault("TROJAN_HASH", "TrojanHash")
 	AuthRemoteIP     string = env.GetDefault("TROJAN_REMOTE_IP", "TrojanRemoteIp")
-	trojanApiCryptor        = de.New(env.Get("trojan_api_secret"))
+	TrojanApiCryptor        = de.New(env.Get("trojan_api_secret"))
 )
 
 func AuthMiddleware(ctx *gin.Context) {
@@ -26,7 +26,7 @@ func AuthMiddleware(ctx *gin.Context) {
 		return
 	}
 
-	_, err := trojanApiCryptor.DecodeEx([]byte(token))
+	_, err := TrojanApiCryptor.DecodeEx([]byte(token))
 	if err != nil {
 		ctx.Writer.WriteHeader(http.StatusForbidden)
 		ctx.Abort()
