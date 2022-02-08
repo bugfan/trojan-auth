@@ -2,7 +2,6 @@ package apis
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/bugfan/de"
@@ -14,20 +13,18 @@ import (
 )
 
 var (
-	TokenKey         string = env.GetDefault("AUTH_KEY", "Trojantoken")
-	AuthHash         string = env.GetDefault("TROJAN_HASH", "TrojanHash")
-	AuthRemoteIP     string = env.GetDefault("TROJAN_REMOTE_IP", "TrojanRemoteIp")
+	TokenKey         string = env.GetDefault("AUTH_KEY", "AuthToken")
+	AuthHash         string = env.GetDefault("TROJAN_HASH", "AuthHash")
+	AuthRemoteIP     string = env.GetDefault("TROJAN_REMOTE_IP", "AuthRemoteIp")
 	TrojanApiCryptor        = de.New(env.Get("trojan_api_secret"))
 )
 
 func AuthMiddleware(ctx *gin.Context) {
 	token := ctx.Request.Header.Get(TokenKey)
-	fmt.Println("test auth", TokenKey, token)
 	if token == "" {
 		ctx.AbortWithError(http.StatusForbidden, errors.New("nil token"))
 		return
 	}
-	fmt.Println("test auth2", AuthRemoteIP, token)
 	_, err := TrojanApiCryptor.DecodeEx([]byte(token))
 	if err != nil {
 		ctx.AbortWithError(http.StatusForbidden, err)

@@ -5,7 +5,7 @@ replace github.com/go-xorm/core => xorm.io/core v0.6.2
 go 1.17
 
 require (
-	github.com/bugfan/de v1.0.2
+	github.com/bugfan/de v1.0.3
 	github.com/bugfan/jsoniter v0.0.0-20191008095102-50a9185e85f5
 	github.com/bugfan/rest v0.0.0-20210929070229-a037536fe1b6
 	github.com/bugfan/to v0.0.0-20191009012259-9ef08661c883

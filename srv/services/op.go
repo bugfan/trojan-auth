@@ -1,6 +1,8 @@
 package services
 
-import "github.com/bugfan/trojan-auth/models"
+import (
+	"github.com/bugfan/trojan-auth/models"
+)
 
 func GetPassByHash(hash string) (string, bool) {
 	credential := &models.Credential{}
@@ -17,6 +19,12 @@ func NewCredential(name, pass, hash string) error {
 		Pass: pass,
 		Hash: hash,
 	}
-	_, err := models.Insert(credential)
+	user := &models.Credential{Name: name}
+	_, err := models.GetEngine().Table(user).Get(user)
+	if err != nil {
+		return err
+	}
+
+	_, err = models.Insert(credential)
 	return err
 }
