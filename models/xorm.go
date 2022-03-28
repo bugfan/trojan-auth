@@ -19,7 +19,6 @@ var (
 )
 
 func init() {
-	Register(&Setting{})
 	Register(&Credential{})
 
 	_, err := SetEngine(&Config{
